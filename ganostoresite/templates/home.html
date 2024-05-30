@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="home-container" style="padding-bottom: 60px;">
+        <h2>Завантажені програми</h2>
+
+        <form method="get" action="">
+            <select name="category" class="category-filter">
+                <option value="">Всі категорії</option>
+                {% for category in categories %}
+                    <option value="{{ category.id }}"
+                            {% if request.GET.category == category.id|stringformat:"s" %}selected{% endif %}>{{ category.name }}</option>
+                {% endfor %}
+            </select>
+            <select name="genre" class="genre-filter">
+                <option value="">Всі жанри</option>
+                {% for genre in genres %}
+                    <option value="{{ genre.id }}"
+                            {% if request.GET.genre == genre.id|stringformat:"s" %}selected{% endif %}>{{ genre.name }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn-filter-program">Фільтрувати</button>
+        </form>
+
+        <div class="programs-list">
+            {% for program in programs %}
+                <div class="program">
+                    <img src="{{ program.image.url }}" alt="{{ program.title }}" class="program-image">
+                    <h3>{{ program.title }}</h3>
+                    <p>{{ program.description|truncatewords:20 }}</p>
+                    <a href="{% url 'program_detail' program.id %}" class="btn-detail">Детальніше</a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <script>
+        function openModal(element, isBlocked) {
+            const blockUrl = element.getAttribute('data-block-url');
+            const unblockUrl = element.getAttribute('data-unblock-url');
+            const modal = document.getElementById('blockUserModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const confirmBtn = document.getElementById('confirmBlock');
+
+            modalTitle.textContent = isBlocked === 'true' ? "Розблокувати користувача?" : "Блокувати користувача?";
+            confirmBtn.onclick = function () {
+                window.location.href = isBlocked === 'true' ? unblockUrl : blockUrl;
+            };
+
+            modal.style.display = "block";
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('blockUserModal');
+            modal.style.display = "none";
+        }
+
+        window.onclick = function (event) {
+            const modal = document.getElementById('blockUserModal');
+            if (event.target === modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
+
+    <div class="user-list-container">
+        <h2 style="display:block; text-align: center;" :>Список користувачів</h2>
+
+        <form method="get" action="{% url 'user_list' %}">
+            <label>
+                <input type="text" name="username" placeholder="Пошук по нікнейму"
+                       style="display: block; width: 20%; margin: 0 auto; margin-bottom: 1%;">
+            </label>
+            <button type="submit" class="btn-search" style="display: block; width: 20%; margin: 0 auto;">Пошук</button>
+        </form>
+
+        <div class="users-list">
+            {% for user in users %}
+                <div class="user">
+                    <h3 style="text-align: center;">{{ user.username }}</h3>
+                    {% if user.avatar %}
+                        <img src="{{ user.avatar.url }}" alt="Аватар"
+                             style="display: block; margin-left: auto; margin-right: auto; width: 100px; height: 100px; margin-bottom: 10px; border-radius: 8px;">
+                    {% else %}
+                        <img src="{% static '1.jpg' %}" alt="Стандартний аватар"
+                             style="display: block; margin-left: auto; margin-right: auto; width: 100px; height: 100px; margin-bottom: 10px; border-radius: 8px;">
+                    {% endif %}
+                    <a href="javascript:void(0)"
+                       class="btn-block-user"
+                       style="display: block; width: 202px; margin-left: auto; margin-right: auto;"
+                       data-block-url="{% url 'block_user' user.id %}"
+                       data-unblock-url="{% url 'unblock_user' user.id %}"
+                       onclick="openModal(this, '{{ user.is_blocked|yesno:'true,false' }}')">
+                        {{ user.is_blocked|yesno:'Розблокувати користувача ,Заблокувати користувача' }}
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div id="blockUserModal" class="modal">
+        <div class="modal-content">
+            <h2 id="modalTitle">Підтвердіть дію</h2>
+            <button id="confirmBlock" class="btn-confirm">Підтвердити</button>
+            <button onclick="closeModal()" class="btn-cancel">Скасувати</button>
+        </div>
+    </div>
+{% endblock %}

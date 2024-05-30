@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="edit-program-container">
+        <h2>Редагування програми "{{ program.title }}"</h2>
+        <form method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+            {% csrf_token %}
+
+            <div class="form-group">
+                {{ form.title }}
+                {% if form.title.errors %}
+                    <div class="invalid-feedback">
+                        {{ form.title.errors }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                {{ form.description }}
+                {% if form.description.errors %}
+                    <div class="invalid-feedback">
+                        {{ form.description.errors }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                {{ form.category }}
+                {% if form.category.errors %}
+                    <div class="invalid-feedback">
+                        {{ form.category.errors }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                {{ form.genre }}
+                {% if form.genre.errors %}
+                    <div class="invalid-feedback">
+                        {{ form.genre.errors }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <button type="button" id="uploadProgramButton" class="btn-upload-file">Завантажити програму</button>
+            <div class="hiddenim">{{ form.program_file }}</div>
+
+            <button type="button" id="uploadIconButton" class="btn-upload-file">Завантажити іконку</button>
+            <div class="hiddenim">{{ form.image }}</div>
+
+            <button type="submit" class="btn-save-changes">Зберегти зміни</button>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('uploadProgramButton').addEventListener('click', function () {
+                document.querySelector('input[name="program_file"]').click();
+            });
+
+            document.getElementById('uploadIconButton').addEventListener('click', function () {
+                document.querySelector('input[name="image"]').click();
+            });
+        });
+    </script>
+{% endblock %}

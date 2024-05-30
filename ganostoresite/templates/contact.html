@@ -1,0 +1,55 @@
+<head>
+    <title>GanoStore - Контакти</title>
+</head>
+
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="contact-container">
+        <h2>Контакти</h2>
+        <p>Якщо у вас є питання або пропозиції, будь ласка, не вагайтеся зв'язатися з нами:</p>
+
+        <div class="contact-info">
+            <p><strong>Електронна пошта:</strong> archtoxix@gmail.com</p>
+            <p><strong>Телефон:</strong> +38 (066) 999-66-99</p>
+            <p><strong>Адреса:</strong> 25565, Україна, Чернівці, вул. Дарвіна, буд. 2А</p>
+        </div>
+
+        <h3>Форма зворотнього зв'язку</h3>
+        <form id="feedback-form">
+            <div class="form-group">
+                <input placeholder="Ім'я" type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <input placeholder="Пошта" type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <textarea placeholder="Повідомлення" id="message" name="message" rows="5" required></textarea>
+            </div>
+            <button type="button" class="btn-submit" onclick="showModal()">Надіслати</button>
+        </form>
+    </div>
+
+    <div id="feedbackModal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <p>Ваше повідомлення було "надіслано". Дякуємо за зворотній зв'язок!</p>
+        </div>
+    </div>
+
+    <script>
+        function showModal() {
+            document.getElementById('feedbackModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('feedbackModal').style.display = 'none';
+        }
+
+        window.onclick = function (event) {
+            let modal = document.getElementById('feedbackModal');
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+    </script>
+{% endblock %}

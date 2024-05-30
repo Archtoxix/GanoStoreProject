@@ -1,0 +1,53 @@
+
+
+{% extends 'base.html' %}
+{% load custom_filters %}
+
+{% block content %}
+    <div class="registration-container">
+        <h2>Реєстрація</h2>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group">
+                <label style="display: none;">{{ form.username.label_tag }}</label>
+                {{ form.username|add_placeholder:"Нікнейм" }}
+            </div>
+            <div class="form-group">
+                <label style="display: none;">{{ form.email.label_tag }}</label>
+                {{ form.email|add_placeholder:"Пошта" }}
+            </div>
+            <div class="form-group">
+                <label style="display: none;">{{ form.password1.label_tag }}</label>
+                {{ form.password1|add_placeholder:"Пароль" }}
+            </div>
+            <div class="form-group">
+                <label style="display: none;">{{ form.password2.label_tag }}</label>
+                {{ form.password2|add_placeholder:"Підтвердіть пароль" }}
+            </div>
+            <div class="form-group">
+                <label style="display: none;">{{ form.secret_question.label_tag }}</label>
+                {{ form.secret_question|add_placeholder:"Секретне питання" }}
+            </div>
+            <div class="form-group">
+                <label style="display: none;">{{ form.secret_answer.label_tag }}</label>
+                {{ form.secret_answer|add_placeholder:"Відповідь на питання" }}
+            </div>
+            <div class="form-group">
+                <label style="display: none;">{{ form.avatar.label_tag }}</label>
+                <label for="id_avatar" class="custom-file-upload">Обрати аватарку</label>
+                <input type="file" name="avatar" id="id_avatar" class="avatar-input" accept="image/*">
+            </div>
+            <button type="submit" class="btn-register">Зареєструватися</button>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelector('.avatar-input').style.display = 'none';
+        });
+
+        document.querySelector('.custom-file-upload').addEventListener('mousedown', function () {
+            document.querySelector('.avatar-input').click();
+        });
+    </script>
+{% endblock %}

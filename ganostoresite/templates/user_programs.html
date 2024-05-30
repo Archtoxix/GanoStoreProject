@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="my-programs-container">
+        <h2>Програми, завантажені Вами:</h2>
+
+        <div class="programs">
+            {% for program in programs %}
+                <div class="program">
+                    <h3>{{ program.title }}</h3>
+                    <img src="{{ program.image.url }}" alt="{{ program.title }}" class="program-image">
+                    <p>{{ program.description }}</p>
+                    <a href="{% url 'program_detail' program.id %}" class="btn-detail">Детальніше</a>
+                </div>
+            {% empty %}
+                <p>Програми не знайдені.</p>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

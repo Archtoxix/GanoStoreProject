@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="manage-moderators-container">
+    <h2>Управління модераторами</h2>
+
+    {% if messages %}
+        <div class="alert-container">
+            {% for message in messages %}
+                <div class="alert {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <form method="get" action="{% url 'manage_moderators' %}">
+        <label>
+            <input type="text" name="username" placeholder="Пошук по нікнейму" value="{{ request.GET.username }}">
+        </label>
+        <label><input type="radio" name="user_filter" value="all"
+                      {% if not request.GET.user_filter or request.GET.user_filter == 'all' %}checked{% endif %}>
+            Всі</label>
+        <label><input type="radio" name="user_filter" value="staff"
+                      {% if request.GET.user_filter == 'staff' %}checked{% endif %}> Модератори</label>
+        <label><input type="radio" name="user_filter" value="users"
+                      {% if request.GET.user_filter == 'users' %}checked{% endif %}> Користувачі</label>
+        <button class="btn-filter-moderator" type="submit">Фільтрувати</button>
+    </form>
+
+    <div class="users-list">
+        {% for user in users %}
+            {% if not user.is_superuser %}
+                <div>
+                    <h3>{{ user.username }}</h3>
+                    <p>Email: {{ user.email }}</p>
+                    {% if user.is_staff %}
+                        {% if user.avatar %}
+                            <img src="{{ user.avatar.url }}" alt="Аватар"
+                                 style="display: block; margin-left: auto; margin-right: auto; width: 100px; height: 100px; margin-bottom: 10px; border-radius: 8px;">
+                        {% else %}
+                        {% endif %}
+                        <p>Статус: Модератор</p>
+                        <button class="btn-remove-moderator" onclick="showModal('{{ user.id }}', 'remove')">Зробити
+                            звичайним користувачем
+                        </button>
+                    {% else %}
+                        {% if user.avatar %}
+                            <img src="{{ user.avatar.url }}" alt="Аватар"
+                                 style="display: block; margin-left: auto; margin-right: auto; width: 100px; height: 100px; margin-bottom: 10px; border-radius: 8px;">
+                        {% else %}
+                        {% endif %}
+                        <p>Статус: Користувач</p>
+                        <button class="btn-give-moderator" onclick="showModal('{{ user.id }}', 'add')">Зробити
+                            модератором
+                        </button>
+                    {% endif %}
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    <div id="passwordModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <p>Введіть пароль адміністратора для підтвердження дії:</p>
+        <label for="adminPassword"></label><input type="password" id="adminPassword"
+                                                  placeholder="Пароль адміністратора">
+        <button class="btn-confirm-moderator" onclick="submitAction()">Підтвердити</button>
+    </div>
+
+    <script>
+        let currentUserId = '';
+        let currentAction = '';
+
+        function showModal(userId, action) {
+            currentUserId = userId;
+            currentAction = action;
+            document.getElementById('passwordModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('passwordModal').style.display = 'none';
+        }
+
+        function submitAction() {
+            const password = document.getElementById('adminPassword').value;
+            if (password) {
+                const form = document.createElement('form');
+                form.method = 'post';
+                form.action = currentAction === 'add' ? '{% url 'add_moderator' '000' %}'.replace('000', currentUserId) :
+                    '{% url 'remove_moderator' '000' %}'.replace('000', currentUserId);
+
+                const csrfToken = '{{ csrf_token }}';
+                form.innerHTML = '<input type="hidden" name="csrfmiddlewaretoken" value="' + csrfToken + '">' +
+                    '<input type="hidden" name="admin_password" value="' + password + '">';
+
+                document.body.appendChild(form);
+                form.submit();
+            } else {
+                alert('Пароль не введено!');
+            }
+        }
+    </script>
+{% endblock %}

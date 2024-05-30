@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load custom_filters %}
+
+{% block content %}
+    <div class="login-container">
+        <h2>Вхід</h2>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="id_username" style="display: none;">Ім'я користувача:</label>
+                {{ form.username|add_placeholder:"Ім'я користувача" }}
+            </div>
+            <div class="form-group">
+                <label for="id_password" style="display: none;">Пароль:</label>
+                {{ form.password|add_placeholder:"Пароль" }}
+            </div>
+            <button type="submit" class="btn-login">Увійти</button>
+        </form>
+        <button class="btn-password-reset"><a onclick="location.href='{% url 'password_reset_request' %}'">Забули
+            пароль?</a>
+        </button>
+    </div>
+{% endblock %}
